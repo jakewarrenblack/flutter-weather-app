@@ -2,11 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
+  // We add the locationWeather variable to our LocationScreen object so it can be passed around
+
+  LocationScreen({this.locationWeather});
+  final locationWeather;
+
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  // the State and Stateful widgets are separate
+  // they State object, however, does know which Steateful widget it is linked to
+  // we can access LocationScreen's data through the State object
+
+  @override
+  void initState() {
+    super.initState();
+    // we can access this inside every state object
+    // this widget gives us access to this State's corresponding StatefulWidget (LocationScreen)
+    print(widget.locationWeather);
+  }
+
+  // declared dynamic everywhere - final above, method returns 'Future', declared as var on loading_screen
+  void updateUI(dynamic weatherData) {
+    double temp = weatherData['main']['temp'];
+    int condition = weatherData['weather'][0]['id'];
+    String cityName = weatherData['name'];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

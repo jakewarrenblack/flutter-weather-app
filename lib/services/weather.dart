@@ -1,3 +1,10 @@
+import 'package:clima/services/location.dart';
+import 'package:clima/services/networking.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+final apiKey = dotenv.env['OWM_KEY'];
+const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
+
 class WeatherModel {
   String getWeatherIcon(int condition) {
     if (condition < 300) {
@@ -29,5 +36,19 @@ class WeatherModel {
     } else {
       return 'Bring a 🧥 just in case';
     }
+  }
+
+  Future<dynamic> getLocationWeather() async {
+    // get the user's current location
+    Location myLocation = Location();
+    await myLocation.getCurrentLocation();
+
+    // use the network helper to fetch weather info for this location
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherMapURL?lat=${myLocation.latitude}&lon=${myLocation.longitude}&appid=$apiKey&units=metric');
+
+    // will be passed to location screen
+    var weatherData = await networkHelper.getData();
+    return weatherData;
   }
 }

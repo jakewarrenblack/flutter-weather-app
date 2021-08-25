@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:clima/services/location.dart';
-import 'package:clima/services/networking.dart';
 import 'location_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-final apiKey = dotenv.env['OWM_KEY'];
+import 'package:clima/services/weather.dart';
 
 /*
 Dart null aware operator:
@@ -28,18 +25,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocationData() async {
-    // get the user's current location
-    Location myLocation = Location();
-    await myLocation.getCurrentLocation();
-    latitude = myLocation.latitude;
-    longitude = myLocation.longitude;
-
-    // use the network helper to fetch weather info for this location
-    NetworkHelper networkHelper = NetworkHelper(
-        'https://samples.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
-
-    // will be passed to location screen
-    var weatherData = await networkHelper.getData();
+    // returns a future, so needs await - could complete at any time
+    // we need await because we're passing it to a variable and on to the next screen
+    var weatherData = await WeatherModel().getLocationWeather();
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return LocationScreen(
